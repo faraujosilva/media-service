@@ -36,13 +36,10 @@ jobs:
 
       - name: Update GitOps deployment repo
         run: |
-          git clone https://${{ secrets.GITOPS_PAT }}@github.com/${{ env.GITOPS_REPO }} gitops
+          git clone https://x-access-token:${{ secrets.GITOPS_PAT }}@github.com/${{ env.GITOPS_REPO }}.git gitops
           cd gitops
           
           # Update the manifest with the latest image tag
-          export IMAGE_NAME="${{ env.IMAGE_NAME }}"
-          export TAG="${{ github.sha }}"
-
           sed -i "s|tag: .*|tag: \"${{ github.sha }}\"|g" values.yaml 
 
           # Git Commit and Push Steps
