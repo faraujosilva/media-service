@@ -49,6 +49,6 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
 
-          git add deployment.yaml
+          git add values.yaml
           git commit -m "Update image to ${{ github.sha }}"
           git push origin main
