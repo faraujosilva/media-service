@@ -35,9 +35,14 @@ jobs:
             ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
       - name: Update GitOps deployment repo
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.GITOPS_PAT }}
-          repository: ${{ env.GITOPS_REPO }}
-          event-type: update-image
-          client-payload: '{"tag": "${{ github.sha }}"}'
+        run: |
+          git clone https://x-access-token:${{ secrets.GITOPS_PAT }}@github.com/${{ env.GITOPS_REPO }}.git gitops
+          cd gitops
+          
+          sed -i "s|tag: .*|tag: \"${{ github.sha }}\"|g" values.yaml 
+          
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add values.yaml
+          git commit -m "Update image to ${{ github.sha }}"
+          git push origin main
